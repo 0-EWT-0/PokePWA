@@ -1,38 +1,168 @@
-.App {
+/* Layout base */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fafafa;
+  color: #191919;
+}
+
+/* Header centrado con buscador */
+.header {
+  width: 100%;
+  padding: 16px 12px;
   text-align: center;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Buscador */
+.searchbar {
+  position: relative;
+  width: min(520px, 92vw);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.search-input {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+}
+
+.search-input:focus {
+  border-color: #6b21a8;
+  box-shadow: 0 0 0 3px #ede9fe;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.clear-btn:hover {
+  opacity: 1;
+}
+
+/* Contenido y grid */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0 16px;
+  gap: 16px;
+}
+
+.hint {
+  width: min(1000px, 92%);
+  margin: 0 auto;
+  color: #555;
+  font-size: 14px;
+}
+
+.grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  width: min(1000px, 92%);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+/* Tarjeta del Pokémon */
+.card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.sprite {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
+}
+
+.name {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+/* Paginación */
+.pagination {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
+  width: min(1000px, 92%);
 }
 
-.App-link {
-  color: #61dafb;
+.page-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.page-num {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+.page-num.active {
+  font-weight: 700;
+  border-color: #6b21a8;
+  outline: 2px solid #ede9fe;
+  background: #f6f3ff;
 }
