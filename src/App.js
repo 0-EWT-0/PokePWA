@@ -45,7 +45,7 @@ function App() {
     }
   };
 
-  const sendLocalNotification = async (name) => {
+  const sendLocalNotification = async (name, id) => {
     if (!("Notification" in window)) {
       alert("Este navegador no soporta la Notification API.");
       return;
@@ -57,38 +57,37 @@ function App() {
       return;
     }
 
+    // Fallback sin SW (por si acaso)
     if (!("serviceWorker" in navigator)) {
-      // Fallback simple (no recomendado si ya tienes SW): new Notification(...)
-      new Notification("¡Pokédex lista!", {
-        body: "Sin SW, usando fallback básico.",
+      new Notification(`¡Pokémon: ${name}!`, {
+        body: "¡Tienes que atraparlo!",
+        icon: id
+          ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+          : undefined,
       });
       return;
     }
 
-    // Asegura que el SW esté listo
     const reg = await navigator.serviceWorker.ready;
 
-    // Si existe un controller, manda el mensaje directo al SW controlando esta página
+    const payload = {
+      type: "SHOW_NOTIFICATION",
+      title: `¡Pokémon: ${name}!`,
+      body: "¡Tienes que atraparlo!",
+      url: "/", // cámbialo si quieres abrir otra ruta
+      icon: id
+        ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+        : "/icons/icon-192.png",
+      // image: id ? `...` : undefined, // si quieres una imagen grande
+      tag: `poke-${name}`, // evita duplicados
+    };
+
     if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: "SHOW_NOTIFICATION",
-        title: `¡Pokemon ! ${name}`,
-        body: "Tienes que atraparlos o robarlos",
-        url: "/", // cambia si quieres abrir otra ruta
-        // icon, badge, image, tag… opcionales
-      });
+      navigator.serviceWorker.controller.postMessage(payload);
+    } else if (reg && reg.active) {
+      reg.active.postMessage(payload);
     } else {
-      // En algunos casos, utiliza el registro directamente
-      if (reg && reg.active) {
-        reg.active.postMessage({
-          type: "SHOW_NOTIFICATION",
-          title: "¡Notificación local!",
-          body: "Se envió desde tu PWA sin backend 🎉",
-          url: "/",
-        });
-      } else {
-        console.warn("No hay SW activo para recibir el mensaje.");
-      }
+      console.warn("No hay SW activo para recibir el mensaje.");
     }
   };
 
@@ -179,14 +178,24 @@ function App() {
           {visibleList.map((p) => {
             const id = getIdFromUrl(p.url);
             return (
-              <li onClick={sendLocalNotification(p.name)} key={p.name} className="card">
+              <li
+                key={p.name}
+                className="card"
+                role="button"
+                tabIndex={0}
+                onClick={() => sendLocalNotification(p.name, id)}
+                onKeyDown={(e) =>
+                  (e.key === "Enter" || e.key === " ") &&
+                  sendLocalNotification(p.name, id)
+                }
+              >
                 <img
                   className="sprite"
                   src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
                   alt={p.name}
                   loading="lazy"
                 />
-                <span onClick={sendLocalNotification(p.name)} className="name">{p.name}</span>
+                <span className="name">{p.name}</span>
               </li>
             );
           })}
