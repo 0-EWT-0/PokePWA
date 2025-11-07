@@ -208,6 +208,7 @@ function App() {
                   aria-label={`Enviar notificación de ${p.name}`}
                 >
                   <img
+                    onClick={() => sendLocalNotification(p.name)}
                     className="sprite"
                     src={sprite}
                     alt={p.name}
