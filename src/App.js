@@ -186,7 +186,7 @@ function App() {
                   alt={p.name}
                   loading="lazy"
                 />
-                <span className="name">{p.name}</span>
+                <span onClick={sendLocalNotification(p.name)} className="name">{p.name}</span>
               </li>
             );
           })}
