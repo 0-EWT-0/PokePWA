@@ -177,25 +177,33 @@ function App() {
         <ul className="grid">
           {visibleList.map((p) => {
             const id = getIdFromUrl(p.url);
+            const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+
+            const onCardActivate = () => {
+              console.log("[UI] click/tap en tarjeta:", p.name, id);
+              sendLocalNotification(p.name, id);
+            };
+
             return (
-              <li
-                key={p.name}
-                className="card"
-                role="button"
-                tabIndex={0}
-                onClick={() => sendLocalNotification(p.name, id)}
-                onKeyDown={(e) =>
-                  (e.key === "Enter" || e.key === " ") &&
-                  sendLocalNotification(p.name, id)
-                }
-              >
-                <img
-                  className="sprite"
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
-                  alt={p.name}
-                  loading="lazy"
-                />
-                <span className="name">{p.name}</span>
+              <li key={p.name} className="card">
+                <button
+                  type="button"
+                  className="card-btn" // dale display:block; width:100%; reset de estilos
+                  onClick={onCardActivate}
+                  onPointerUp={onCardActivate} // extra por si algún navegador falla el click
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") && onCardActivate()
+                  }
+                  aria-label={`Enviar notificación de ${p.name}`}
+                >
+                  <img
+                    className="sprite"
+                    src={sprite}
+                    alt={p.name}
+                    loading="lazy"
+                  />
+                  <span className="name">{p.name}</span>
+                </button>
               </li>
             );
           })}
