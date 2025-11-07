@@ -73,28 +73,18 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("message", (event) => {
   if (!event.data) return;
+  console.log("[SW] message received:", event.data);
 
   if (event.data.type === "SHOW_NOTIFICATION") {
-    // Puedes personalizar título y opciones desde el postMessage,
-    // o usar valores por defecto:
-    const title = event.data.title || "¡Pokédex lista!";
+    const title = event.data.title || "¡Pokédex!";
     const options = {
-      body:
-        event.data.body ||
-        "Tu PWA está funcionando offline y con notificaciones 👌",
-      icon: event.data.icon || "/icons/icon-192.png", // asegúrate de tener estos íconos
-      badge: event.data.badge || "/icons/badge-72.png",
-      image: event.data.image, // opcional
+      body: event.data.body || "Notificación local",
+      icon: event.data.icon || "/icons/icon-192.png",
       tag: event.data.tag || "pokedex-local",
       renotify: true,
-      data: {
-        url: event.data.url || "/", // a dónde ir al hacer click
-        // Cualquier otro dato que quieras pasar
-      },
+      data: { url: event.data.url || "/" },
       actions: [{ action: "open", title: "Abrir" }],
     };
-
-    // Mostrar la notificación
     event.waitUntil(self.registration.showNotification(title, options));
   }
 });

@@ -174,26 +174,37 @@ function App() {
           </p>
         )}
 
-        <ul className="grid">
+        <ul
+          className="grid"
+          onClick={(e) => {
+            // delegación de eventos: buscamos el botón más cercano con data-poke-*
+            const target = e.target;
+            const btn = target.closest("[data-poke-name]");
+            if (!btn) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const name = btn.getAttribute("data-poke-name");
+            const id = btn.getAttribute("data-poke-id");
+
+            console.log("[UI] click/tap en tarjeta (delegado):", name, id);
+            sendLocalNotification(name, id);
+          }}
+        >
           {visibleList.map((p) => {
             const id = getIdFromUrl(p.url);
             const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
-            const onCardActivate = () => {
-              console.log("[UI] click/tap en tarjeta:", p.name, id);
-              sendLocalNotification(p.name, id);
-            };
-
             return (
               <li key={p.name} className="card">
+                {/* Botón “inerte” que solo provee los data- atributos; el click real lo maneja el UL */}
                 <button
                   type="button"
-                  className="card-btn" // dale display:block; width:100%; reset de estilos
-                  onClick={onCardActivate}
-                  onPointerUp={onCardActivate} // extra por si algún navegador falla el click
-                  onKeyDown={(e) =>
-                    (e.key === "Enter" || e.key === " ") && onCardActivate()
-                  }
+                  className="card-btn"
+                  data-poke-name={p.name}
+                  data-poke-id={id}
+                  // Importante: no pongas onClick aquí para evitar duplicados
                   aria-label={`Enviar notificación de ${p.name}`}
                 >
                   <img
