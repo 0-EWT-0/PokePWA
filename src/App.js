@@ -45,7 +45,7 @@ function App() {
     }
   };
 
-  const sendLocalNotification = async () => {
+  const sendLocalNotification = async (name) => {
     if (!("Notification" in window)) {
       alert("Este navegador no soporta la Notification API.");
       return;
@@ -72,7 +72,7 @@ function App() {
     if (navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({
         type: "SHOW_NOTIFICATION",
-        title: "¡Pokemon!",
+        title: `¡Pokemon ! ${name}`,
         body: "Tienes que atraparlos o robarlos",
         url: "/", // cambia si quieres abrir otra ruta
         // icon, badge, image, tag… opcionales
@@ -179,7 +179,7 @@ function App() {
           {visibleList.map((p) => {
             const id = getIdFromUrl(p.url);
             return (
-              <li key={p.name} className="card">
+              <li onClick={sendLocalNotification(p.name)} key={p.name} className="card">
                 <img
                   className="sprite"
                   src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
